@@ -3,6 +3,8 @@ NAME = nvmet
 GIT_BRANCH = $$(git branch | grep \* | tr -d \*)
 VERSION = $$(basename $$(git describe --tags | tr - . | sed 's/^v//'))
 DOCDIR = ./Documentation
+TEST_DEVICE1 ?= /tmp/test1
+TEST_DEVICE2 ?= /tmp/test2
 
 all:
 	@echo "Usage:"
@@ -19,7 +21,9 @@ all:
 	@echo "  make uninstalldoc  - Uninstall man pages (need sudo)."
 
 test:
-	@python3 -m nose2 -C --coverage ./nvmet
+	@truncate --size=512M ${TEST_DEVICE1}
+	@truncate --size=512M ${TEST_DEVICE2}
+	@NVMET_TEST_DEVICES=${TEST_DEVICE1},${TEST_DEVICE2} /usr/bin/env python3 -m nose2 -C --coverage ./nvmet
 
 doc: ${NAME}
 	${MAKE} -C ${DOCDIR}
