@@ -26,14 +26,6 @@ import subprocess
 import shlex
 from doctest import testmod
 from glob import iglob as glob
-try:
-    from kmodpy import kmod
-except ImportError:
-    kmod = None
-try:
-    import kmod as kmod_ctypes
-except ImportError:
-    kmod_ctypes = None
 
 DEFAULT_SAVE_FILE = '/etc/nvmet/config.json'
 
@@ -293,20 +285,6 @@ class Root(CFSNode):
         '''
         Load a kernel module.
         '''
-        if kmod:
-            try:
-                kmod.Kmod().modprobe(modname, quiet=True)
-                return
-            except kmod.KmodError:
-                pass
-
-        if kmod_ctypes:
-            try:
-                kmod_ctypes.Kmod().modprobe(modname)
-                return
-            except OSError:
-                pass
-
         # Try the binary specified in /proc
         try:
             modprobe_cmd = None
