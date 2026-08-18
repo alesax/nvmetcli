@@ -23,7 +23,8 @@ all:
 test:
 	@truncate --size=512M ${TEST_DEVICE1}
 	@truncate --size=512M ${TEST_DEVICE2}
-	@NVMET_TEST_DEVICES=${TEST_DEVICE1},${TEST_DEVICE2} /usr/bin/env python3 -m nose2 -C --coverage ./nvmet
+	@NVMET_TEST_DEVICES=${TEST_DEVICE1},${TEST_DEVICE2} /usr/bin/env python3 -m coverage run -m nose2 --verbose nvmet
+	@coverage report
 
 doc: ${NAME}
 	${MAKE} -C ${DOCDIR}
